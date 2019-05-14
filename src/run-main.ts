@@ -2,12 +2,11 @@ import {NestFactory} from "@nestjs/core";
 import {AppModule} from "./app-module";
 import {ApplicationService} from "./services/application";
 import {RunCode} from "./command-lines";
-import {ApplicationLoggerService} from "./services/logging";
 import {RunAction} from "./command-lines/actions";
 
 export async function runMain() {
   try {
-    const nest = await NestFactory.create(AppModule);
+    const nest = await NestFactory.create(AppModule, {logger: false});
     const app = nest.get(ApplicationService);
     app.init(nest);
 

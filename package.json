@@ -25,15 +25,17 @@
     "@microsoft/ts-command-line": "^4.2.3",
     "@nestjs/common": "^6.1.0",
     "@nestjs/core": "^6.1.0",
-    "@nestjs/websockets": "^6.1.0",
     "@nestjs/platform-express": "^6.1.0",
+    "@nestjs/websockets": "^6.1.0",
     "debug": "^4.1.1",
-    "rxjs": "^6.2.2",
     "guid-typescript": "^1.0.9",
-    "reflect-metadata": "^0.1.13"
+    "reflect-metadata": "^0.1.13",
+    "rxjs": "^6.2.2",
+    "socket.io-client": "^2.2.0"
   },
   "devDependencies": {
     "@types/node": "^10.12.24",
+    "@types/socket.io-client": "^1.4.32",
     "tsc-watch": "^2.1.2",
     "typescript": "^3.3.3",
     "rimraf": "^2.6.3",
