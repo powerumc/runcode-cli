@@ -44,7 +44,7 @@ export class RunAction extends CommandLineAction {
   protected async onExecute() {
     this.logger.debug(`run code: isInteractive=${this.isInteractive.value}`);
 
-    const socket = io("http://localhost:15000");
+    const socket = io.connect("http://localhost:15000/sapi/v1");
     socket.on("connect", () => {
       this.logger.info("connected");
 
@@ -66,9 +66,17 @@ export class RunAction extends CommandLineAction {
           }
         ]
       };
-      socket.emit("/sapi/code", request);
+      // socket.emit("code", request);
+      socket.emit("ping");
+      this.logger.info("send ping");
     });
 
+    socket.on("pong", data => {
+      this.logger.info(data);
+    });
+    socket.on("event", data => {
+      this.logger.info(data);
+    });
     socket.on("/sapi/code", data => {
       this.logger.info(data);
     });
