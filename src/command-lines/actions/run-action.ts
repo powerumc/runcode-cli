@@ -23,13 +23,13 @@ export class RunAction extends CommandLineAction {
       required: false,
       parameterShortName: "-i",
       parameterLongName: "--interactive",
-      description: "interactive with stdin/stdout"
+      description: "Interactive with stdin/stdout"
     });
     this.language = this.defineStringParameter({
       required: true,
       parameterShortName: "-l",
       parameterLongName: "--lang",
-      description: "Code's language",
+      description: "Language",
       argumentName: "LANG"
     });
     this.version = this.defineStringParameter({
@@ -44,7 +44,7 @@ export class RunAction extends CommandLineAction {
   protected async onExecute() {
     this.logger.debug(`run code: isInteractive=${this.isInteractive.value}`);
 
-    const socket = io.connect("http://localhost:15000/sapi/v1");
+    const socket = io.connect("http://localhost:15000");
     socket.on("connect", () => {
       this.logger.info("connected");
 
@@ -66,9 +66,7 @@ export class RunAction extends CommandLineAction {
           }
         ]
       };
-      // socket.emit("code", request);
-      socket.emit("ping");
-      this.logger.info("send ping");
+      socket.emit("run", request);
     });
 
     socket.on("pong", data => {
@@ -77,8 +75,11 @@ export class RunAction extends CommandLineAction {
     socket.on("event", data => {
       this.logger.info(data);
     });
-    socket.on("/sapi/code", data => {
-      this.logger.info(data);
+    socket.on("run-result", data => {
+      this.logger.info(JSON.stringify(data, null, 2));
+    });
+    socket.on("exception", data => {
+      this.logger.error(data);
     });
     socket.on("disconnect", () => {
       this.logger.info("Disconnected");
