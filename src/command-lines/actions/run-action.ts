@@ -50,10 +50,13 @@ export class RunAction extends CommandLineAction {
 
       const request = {
         "language": "cs",
+        "options": {
+          "isInteractive": this.isInteractive.value
+        },
         "files": [
           {
             "name": "a.cs",
-            "value": "using System;\nnamespace HelloWorld\n{\n    class Hello \n    {\n        static void Main() \n        {\n            Console.WriteLine(\"Hello World!\");\n\n            // Keep the console window open in debug mode.\n            Console.WriteLine(\"Press any key to exit.\");\n            Console.ReadKey();\n        }\n    }\n}"
+            "value": "using System;class MainClass { public static void Main (string[] args) { Console.WriteLine (\"Hello World\"); Console.Write(\"Input your name: \"); var name = Console.ReadLine(); Console.WriteLine($\"Your name is {name}\"); } }"
           },
           {
             "name": "dd",
@@ -66,17 +69,27 @@ export class RunAction extends CommandLineAction {
           }
         ]
       };
+
+
+
+
       socket.emit("run", request);
     });
-
-    socket.on("pong", data => {
-      this.logger.info(data);
+    socket.on("stdout", data => {
+      this.logger.info("stdout");
+      if (data && data.result && data.result.stdout) {
+        console.log(data.result.stdout);
+      }
     });
     socket.on("event", data => {
       this.logger.info(data);
     });
     socket.on("run-result", data => {
       this.logger.info(JSON.stringify(data, null, 2));
+
+      // if (data && data.result && data.result.stdout) {
+      //   console.log(data.result.stdout);
+      // }
     });
     socket.on("exception", data => {
       this.logger.error(data);
