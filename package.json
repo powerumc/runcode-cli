@@ -7,7 +7,7 @@
     "runcode": "./dist/bin/main.js"
   },
   "scripts": {
-    "start:dev": "npm-run-all clean && tsc-watch --onSuccess \"node dist/main.js run -i --lang cs\" ",
+    "start:dev": "npm-run-all clean && tsc-watch --onSuccess \"NODE_ENV=development node dist/main.js run -i --lang cs\" ",
     "clean": "rimraf dist",
     "build": "tsc"
   },

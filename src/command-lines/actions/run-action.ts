@@ -1,7 +1,7 @@
 import {CommandLineAction, CommandLineFlagParameter, CommandLineStringParameter} from "@microsoft/ts-command-line/lib";
 import {ApplicationLoggerService} from "../../services/logging";
 import {Injectable} from "@nestjs/common";
-import * as io from "socket.io-client";
+import {ExecuteServiceFactory} from "../../services/execution";
 
 @Injectable()
 export class RunAction extends CommandLineAction {
@@ -9,11 +9,13 @@ export class RunAction extends CommandLineAction {
   private isInteractive: CommandLineFlagParameter;
   private language: CommandLineStringParameter;
   private version: CommandLineStringParameter;
+  private result: CommandLineFlagParameter;
 
-  constructor(private logger: ApplicationLoggerService) {
+  constructor(private logger: ApplicationLoggerService,
+              private executeFactory: ExecuteServiceFactory) {
     super({
       actionName: "run",
-      documentation: "run your code",
+      documentation: "Run your code",
       summary: ""
     });
   }
@@ -39,15 +41,16 @@ export class RunAction extends CommandLineAction {
       description: "Compiler version",
       argumentName: "VERSION"
     });
+    this.result = this.defineFlagParameter({
+      required: false,
+      parameterShortName: "-r",
+      parameterLongName: "--result",
+      description: "Code execution result"
+    });
   }
 
   protected async onExecute() {
-    this.logger.debug(`run code: isInteractive=${this.isInteractive.value}`);
-
-    const socket = io.connect("http://localhost:15000");
-    socket.on("connect", () => {
-      this.logger.info("connected");
-
+    try {
       const request = {
         "language": "cs",
         "options": {
@@ -70,33 +73,26 @@ export class RunAction extends CommandLineAction {
         ]
       };
 
-      socket.emit("run", request);
+      const executeService = this.executeFactory.create(request);
+      const result = await executeService.execute(request);
 
+      if (result && result.result) {
+        if (result.result.stderr) {
+          console.log(result.result.stderr);
+        }
+        if (result.result.stdout) {
+          console.log(result.result.stdout);
+        }
+      }
 
-      process.stdin.on("data", data => {
-        socket.emit("stdin", data.toString());
-      });
+      if (this.result.value) {
+        console.log(JSON.stringify(result, null, 2));
+      }
 
-    });
-    socket.on("stdout", data => {
-      console.log(data);
-    });
-    socket.on("message", data => {
-      console.log(data);
-    });
-    socket.on("run-result", data => {
-      this.logger.info(JSON.stringify(data, null, 2));
-    });
-    socket.on("exception", data => {
-      this.logger.error(data);
-    });
-    socket.on("disconnect", () => {
-      this.logger.info("Disconnected");
-    });
-
-
-    process.on("exit", code => {
-      console.log("exit");
-    });
+      process.exit(0);
+    } catch(e) {
+      console.error(e);
+      process.exit(-1);
+    }
   }
 }
