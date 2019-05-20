@@ -70,32 +70,33 @@ export class RunAction extends CommandLineAction {
         ]
       };
 
-
-
-
       socket.emit("run", request);
+
+
+      process.stdin.on("data", data => {
+        socket.emit("stdin", data.toString());
+      });
+
     });
     socket.on("stdout", data => {
-      this.logger.info("stdout");
-      if (data && data.result && data.result.stdout) {
-        console.log(data.result.stdout);
-      }
+      console.log(data);
     });
-    socket.on("event", data => {
-      this.logger.info(data);
+    socket.on("message", data => {
+      console.log(data);
     });
     socket.on("run-result", data => {
       this.logger.info(JSON.stringify(data, null, 2));
-
-      // if (data && data.result && data.result.stdout) {
-      //   console.log(data.result.stdout);
-      // }
     });
     socket.on("exception", data => {
       this.logger.error(data);
     });
     socket.on("disconnect", () => {
       this.logger.info("Disconnected");
+    });
+
+
+    process.on("exit", code => {
+      console.log("exit");
     });
   }
 }
