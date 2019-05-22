@@ -11,11 +11,11 @@ export class HttpConfigService implements HttpModuleOptionsFactory {
   }
 
   private getBaseUrl() {
-    if (process.env.NODE_ENV === "development") {
-      return "http://localhost:15000";
+    if (process.env.NODE_ENV === "production") {
+      return "https://powerjudge.com";
     }
 
-    return "https://powerjudge.com";
+    return "http://localhost:15000";
   }
 
 }
