@@ -27,7 +27,7 @@ export class WebsocketExecuteService implements IExecuteService, OnModuleDestroy
 
       });
       this.socket.on("stdout", data => {
-        console.log(data);
+        process.stdout.write(data);
       });
       this.socket.on("message", data => {
         console.log(data);
