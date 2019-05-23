@@ -3,8 +3,6 @@ import {AppModule} from "./app-module";
 import {ApplicationService} from "./services/application";
 import {RunCode} from "./command-lines";
 import {RunAction} from "./command-lines/actions";
-const colors = require("colors");
-colors.enabled = true;
 
 export async function runMain() {
   try {
