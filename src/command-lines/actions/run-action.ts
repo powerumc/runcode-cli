@@ -51,15 +51,36 @@ export class RunAction extends CommandLineAction {
 
   protected async onExecute() {
     try {
+      // const request = {
+      //   "language": "cs",
+      //   "options": {
+      //     "isInteractive": this.isInteractive.value
+      //   },
+      //   "files": [
+      //     {
+      //       "name": "a.cs",
+      //       "value": "using System;class MainClass { public static void Main (string[] args) { Console.WriteLine (\"Hello World\"); Console.Write(\"Input your name: \"); var name = Console.ReadLine(); Console.WriteLine($\"Your name is {name}\"); } }"
+      //     },
+      //     {
+      //       "name": "dd",
+      //       "value": [
+      //         {
+      //           "name": "b.cs",
+      //           "value": ""
+      //         }
+      //       ]
+      //     }
+      //   ]
+      // };
       const request = {
-        "language": "cs",
+        "language": "c",
         "options": {
           "isInteractive": this.isInteractive.value
         },
         "files": [
           {
-            "name": "a.cs",
-            "value": "using System;class MainClass { public static void Main (string[] args) { Console.WriteLine (\"Hello World\"); Console.Write(\"Input your name: \"); var name = Console.ReadLine(); Console.WriteLine($\"Your name is {name}\"); } }"
+            "name": "a.c",
+            "value": "#include <stdio.h>\n\nint main(void) {\n  printf(\"Hello World\\n\");\n  printf(\"Input your name: \");\n  char s[256];\n  scanf(\"%s\", s);\n  printf(\"Your name is %s\\n\", s);\n  return 0;\n}"
           },
           {
             "name": "dd",
