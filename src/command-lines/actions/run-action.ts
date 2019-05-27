@@ -80,7 +80,7 @@ export class RunAction extends CommandLineAction {
         "files": [
           {
             "name": "a.sh",
-            "value": "ls -al"
+            "value": "#!/usr/bin/env bash\nls -al"
           }
         ],
         "entry": "a.sh"
