@@ -1,7 +1,12 @@
-import {CommandLineAction, CommandLineFlagParameter, CommandLineStringParameter} from "@microsoft/ts-command-line/lib";
+import {
+  CommandLineAction,
+  CommandLineFlagParameter, CommandLineStringListParameter,
+  CommandLineStringParameter
+} from "@microsoft/ts-command-line/lib";
 import {ApplicationLoggerService} from "../../services/logging";
 import {Injectable} from "@nestjs/common";
 import {ExecuteServiceFactory} from "../../services/execution";
+import {IFilesRequest} from "../../models";
 
 @Injectable()
 export class RunAction extends CommandLineAction {
@@ -10,6 +15,8 @@ export class RunAction extends CommandLineAction {
   private language: CommandLineStringParameter;
   private version: CommandLineStringParameter;
   private result: CommandLineFlagParameter;
+  private files: CommandLineStringListParameter;
+  private entry: CommandLineStringParameter;
 
   constructor(private logger: ApplicationLoggerService,
               private executeFactory: ExecuteServiceFactory) {
@@ -47,32 +54,59 @@ export class RunAction extends CommandLineAction {
       parameterLongName: "--result",
       description: "Code execution result"
     });
+    this.files =  this.defineStringListParameter({
+      required: false,
+      parameterLongName: "--files",
+      parameterShortName: "-f",
+      description: "Source files",
+      argumentName: "FILES",
+    });
+    this.entry = this.defineStringParameter({
+      required: false,
+      parameterLongName: "--entry",
+      parameterShortName: "-e",
+      description: "Entry file",
+      argumentName: "ENTRY"
+    });
   }
 
   protected async onExecute() {
     try {
-      const request = {
-        "language": "cs",
+      const request: IFilesRequest = {
+        "language": "bash",
         "options": {
           "isInteractive": this.isInteractive.value
         },
         "files": [
           {
-            "name": "a.cs",
-            "value": "using System;class MainClass { public static void Main (string[] args) { Console.WriteLine (\"Hello World\"); Console.Write(\"Input your name: \"); var name = Console.ReadLine(); Console.WriteLine($\"Your name is {name}\"); } }"
-          },
-          {
-            "name": "dd",
-            "value": [
-              {
-                "name": "b.cs",
-                "value": ""
-              }
-            ]
+            "name": "a.sh",
+            "value": "ls -al"
           }
-        ]
+        ],
+        "entry": "a.sh"
       };
-      // const request = {
+      // const request: IFilesRequest = {
+      //   "language": "cs",
+      //   "options": {
+      //     "isInteractive": this.isInteractive.value
+      //   },
+      //   "files": [
+      //     {
+      //       "name": "a.cs",
+      //       "value": "using System;class MainClass { public static void Main (string[] args) { Console.WriteLine (\"Hello World\"); Console.Write(\"Input your name: \"); var name = Console.ReadLine(); Console.WriteLine($\"Your name is {name}\"); } }"
+      //     },
+      //     {
+      //       "name": "dd",
+      //       "value": [
+      //         {
+      //           "name": "b.cs",
+      //           "value": ""
+      //         }
+      //       ]
+      //     }
+      //   ]
+      // };
+      // const request: IFilesRequest = {
       //   "language": "c",
       //   "options": {
       //     "isInteractive": this.isInteractive.value
