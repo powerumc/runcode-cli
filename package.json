@@ -1,0 +1,45 @@
+{
+  "name": "runcode-cli",
+  "version": "1.0.0",
+  "description": "",
+  "main": "./dist/main.js",
+  "bin": {
+    "runcode": "./dist/bin/main.js"
+  },
+  "scripts": {
+    "start:dev": "npm-run-all clean && tsc-watch --onSuccess \"cross-env NODE_ENV=development node dist/main.js run -i --lang cs\" ",
+    "clean": "rimraf dist",
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/powerumc/runcode.git"
+  },
+  "author": "powerumc",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/powerumc/runcode/issues"
+  },
+  "homepage": "https://github.com/powerumc/runcode#readme",
+  "dependencies": {
+    "@microsoft/ts-command-line": "^4.2.3",
+    "@nestjs/common": "^6.1.0",
+    "@nestjs/core": "^6.1.0",
+    "@nestjs/platform-express": "^6.1.0",
+    "@nestjs/websockets": "^6.1.0",
+    "debug": "^4.1.1",
+    "guid-typescript": "^1.0.9",
+    "reflect-metadata": "^0.1.13",
+    "rxjs": "^6.2.2",
+    "socket.io-client": "^2.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^10.12.24",
+    "@types/socket.io-client": "^1.4.32",
+    "tsc-watch": "^2.1.2",
+    "typescript": "^3.3.3",
+    "rimraf": "^2.6.3",
+    "npm-run-all": "^4.1.5",
+    "cross-env": "^5.2.0"
+  }
+}
